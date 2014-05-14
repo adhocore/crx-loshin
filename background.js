@@ -20,6 +20,10 @@ function swapIcon() {
             minutes.push((tyms[0] < 1 ? 24 : tyms[0]) * 60 + tyms[1] * 1);              
         });
     }); 
+
+    // quick fix:
+    if (minutes[0] > minutes[1]) minutes[1] += 1440;
+    if (minutes[2] > minutes[3]) minutes[3] += 1440;
     
     if ( ( (diff1 = minutes[0] - minute) > 0 && diff1 < alertThreshold) 
         ||
@@ -46,5 +50,4 @@ function ping() {
 }
 
 ping();
-
 

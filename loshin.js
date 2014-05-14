@@ -1,7 +1,7 @@
 var Loshin = Loshin || {
     
-    init: function(){
-        if (localStorage.getItem('loshinCacheDate') != new Date().toLocaleDateString()) {
+    init: function(force){
+        if (force || (localStorage.getItem('loshinCacheDate') != new Date().toLocaleDateString())) {
             var req = new XMLHttpRequest();
             req.open("GET", 'http://api.battigayo.com/', true);
             req.onload = this.load.bind(this);
@@ -85,10 +85,16 @@ $('save-setting').addEventListener('click', function(){
         alertBefore < 10 ? 10 : alertBefore > 90 ? 90 : alertBefore
     );
     $('save-setting').value = 'Saved';
-    var saver = setTimeout(function(){
-        $('save-setting').value = 'Save';
-        clearInterval(saver);
-    }, 1234);
+    if ($('force-update').checked) {
+        Loshin.init(true);
+        document.location.hash = 'box-one';
+        $('force-update').checked = false;
+    } else {
+        var saver = setTimeout(function(){
+            $('save-setting').value = 'Save';
+            clearInterval(saver);
+        }, 1234);
+    }
 })
 
 var tabAnchors = document.getElementsByClassName('tab-anchor');
