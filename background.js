@@ -1,11 +1,12 @@
-var LastIcon = 'default', notifer;
+// globals for easy access by interval'ed callback
+var LastIcon = 'default', notifer, 
+    icon = 'default', within = '';
 
 function swapIcon() {
     var schedule = JSON.parse(localStorage.loshinCache || '[0]')[0], newDate = new Date(),
         today = 'sunday monday tuesday wednesday thursday friday saturday'.split(' ')[newDate.getDay()],
         alertThreshold = localStorage.loshinAlertBefore * 1 || 15, 
-        icon = 'default',  minutes = [], blackOut, within = '',
-        minute = newDate.getHours() * 60 + newDate.getMinutes() 
+        minutes = [], blackOut, minute = newDate.getHours() * 60 + newDate.getMinutes() 
     ;
 
     if (! schedule) {
@@ -26,33 +27,36 @@ function swapIcon() {
     if (minutes[0] > minutes[1]) minutes[1] += 1440;
     if (minutes[2] > minutes[3]) minutes[3] += 1440;
     
-    if ( ( (diff1 = minutes[0] - minute) > 0 && diff1 < alertThreshold) 
+    if ( ( (diff1 = minutes[0] - minute) >= 0 && diff1 < alertThreshold) 
         ||
-        ( (diff1 = minutes[2] - minute) > 0 && diff1 < alertThreshold)
+        ( (diff1 = minutes[2] - minute) >= 0 && diff1 < alertThreshold)
     ) icon = 'going';
-    else if ( ( (diff2 = minutes[1] - minute) > 0 && diff2 < alertThreshold) 
+    else if ( ( (diff2 = minutes[1] - minute) >= 0 && diff2 < alertThreshold) 
         ||
-        ( (diff2 = minutes[3] - minute) > 0 && diff2 < alertThreshold)
+        ( (diff2 = minutes[3] - minute) >= 0 && diff2 < alertThreshold)
     ) icon = 'coming';
     else if (minute < minutes[0] || minute > minutes[3] || (minute > minutes[1] && minute < minutes[2]))
         icon = 'on';
     else icon = 'off';
         
-    if (icon == 'going') within = ' within ' + diff1 + ' minutes';
-    else if (icon == 'coming') within = ' within ' + diff2 + ' minutes';
+    if (icon == 'going') within = ' within ' + diff1 + ' minute(s)';
+    else if (icon == 'coming') within = ' within ' + diff2 + ' minute(s)';
+    else within = '';
 
     chrome.browserAction.setIcon({ path: 'icons/' + icon + '.png' });
     chrome.browserAction.setTitle({ title:'loshin: Light is ' + icon + within });
 
     if (icon !== LastIcon) {
-        notify(icon);
+        clearInterval(notifer);
+        notifer = null;
+        notify();
     }
 
-    function notify(icon) {
+    function notify() {
         LastIcon = icon;
         var notification = webkitNotifications.createNotification(
                 'icons/' + icon + '.png',  
-                new Date().toLocaleTimeString(), 
+                new Date().toLocaleTimeString().replace(/:\d+ /, ' '), 
                 'loshin: Light is ' + icon + within
             )
         ;
@@ -63,7 +67,7 @@ function swapIcon() {
         var inter = localStorage.loshinNoticeInterval;
         notifer = setInterval(
             function() {
-                notify(icon);
+                notify();
             }, 
             (inter || 30) * 60000
         );
@@ -71,7 +75,7 @@ function swapIcon() {
 }
 
 function ping() {   
-    var tymr = setInterval(swapIcon, 12345);
+    var tymr = setInterval(swapIcon, 10000);
     swapIcon();     
 }
 
