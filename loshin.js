@@ -88,7 +88,7 @@ $('save-setting').addEventListener('click', function(){
     localStorage.loshinAlertBefore =  alertBefore < 10 
         ? 10 : alertBefore > 90 ? 90 : alertBefore;
     localStorage.loshinNoticeInterval =  noticeInterval < 30 
-        ? 30 : noticeInterval > 180 ? 180 : alertBefore;
+        ? 30 : noticeInterval > 180 ? 180 : noticeInterval;
     
     $('save-setting').value = 'Saved';
     
