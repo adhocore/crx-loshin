@@ -4,12 +4,16 @@
   "name": "loshin, the LoadShedding Indicator",
   "description": "An extension for realtime update of loadshedding schedule in Nepal  (using battigayo.com api).",
   "version": "1.0",
-  "permissions": ["http://api.battigayo.com/"],
+  "permissions": ["http://api.battigayo.com/", "notifications"],
   "background": {
   	"scripts": ["background.js"]
   },
   "browser_action": {
     "default_icon": "icons/default.png",
     "default_popup": "loshin.html"
-  }
+  },
+  "web_accessible_resources": [
+    "icons/default.png", "icons/on.png", "icons/off.png", 
+    "icons/coming.png", "icons/going.png"
+  ]
 }

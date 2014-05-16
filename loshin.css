@@ -23,7 +23,7 @@ table td.today { font-style: italic; }
 
 .legend li { line-height: 1.5em; }
 .legend img { width: 24px; }
-label { width: 100px; float: left; font-weight: bold; padding-top: 10px; }
+label { width: 190px; float: left; font-weight: bold; padding-top: 10px; }
 input, select, textarea { font-size: 16px; padding: 5px; }
 
 #updated { cursor: help; text-decoration: underline; }

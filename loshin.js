@@ -1,7 +1,7 @@
 var Loshin = Loshin || {
     
     init: function(force){
-        if (force || (localStorage.getItem('loshinCacheDate') != new Date().toLocaleDateString())) {
+        if (force || (localStorage.loshinCacheDate != new Date().toLocaleDateString())) {
             var req = new XMLHttpRequest();
             req.open("GET", 'http://api.battigayo.com/', true);
             req.onload = this.load.bind(this);
@@ -14,18 +14,18 @@ var Loshin = Loshin || {
         var data = xhrEvt.target.responseText, 
             schedule = JSON.parse(data || '[0]')
         ;
-        localStorage.setItem('loshinCache', data);
-        localStorage.setItem('loshinCacheDate', new Date().toLocaleDateString())
+        localStorage.loshinCache = data;
+        localStorage.loshinCacheDate = new Date().toLocaleDateString()
         this.build(schedule[0]);
     },
     
     cache: function(){
-        var schedule = JSON.parse(localStorage.getItem('loshinCache') || '[0]');
+        var schedule = JSON.parse(localStorage.loshinCache || '[0]');
         this.build(schedule[0]);
     },
     
     build: function(schedule) {
-        var myGroup = localStorage.getItem('loshinMyGroup') || 'group_1',
+        var myGroup = localStorage.loshinMyGroup || 'group_1',
             days = 'sunday monday tuesday wednesday thursday friday saturday'.split(' ')
             today = new Date().getDay(), tHead = ''
         ;
@@ -42,7 +42,8 @@ var Loshin = Loshin || {
         ;
 
         $('my-group').value = myGroup;
-        $('alert-before').value = localStorage.getItem('loshinAlertBefore') || 15;
+        $('alert-before').value = localStorage.loshinAlertBefore || 15;
+        $('notice-interval').value = localStorage.loshinNoticeInterval || 30;
         
         if (! schedule) {
             errMsg = '<td colspan="8">Error loading, Please check connection </td>';
@@ -53,6 +54,7 @@ var Loshin = Loshin || {
 
         $('updated').innerHTML = schedule.updated.nepali + ' BS';
         $('updated').title = schedule.updated.english + ' AD';
+
         for (i = 1; i <= 7; i++) {
             var group = 'group_' + i, 
                 outHtml = '<tr><td>' + i + '</td>'
@@ -79,22 +81,28 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 $('save-setting').addEventListener('click', function(){
-    var alertBefore = $('alert-before').value * 1;
-    localStorage.setItem('loshinMyGroup', $('my-group').value);
-    localStorage.setItem('loshinAlertBefore', 
-        alertBefore < 10 ? 10 : alertBefore > 90 ? 90 : alertBefore
-    );
+    var alertBefore = $('alert-before').value * 1,
+        noticeInterval = $('notice-interval').value * 1
+    ;
+    localStorage.loshinMyGroup = $('my-group').value;
+    localStorage.loshinAlertBefore =  alertBefore < 10 
+        ? 10 : alertBefore > 90 ? 90 : alertBefore;
+    localStorage.loshinNoticeInterval =  noticeInterval < 30 
+        ? 30 : noticeInterval > 180 ? 180 : alertBefore;
+    
     $('save-setting').value = 'Saved';
+    
     if ($('force-update').checked) {
         Loshin.init(true);
-        document.location.hash = 'box-one';
+        document.location.hash = 'box-three';
         $('force-update').checked = false;
-    } else {
-        var saver = setTimeout(function(){
-            $('save-setting').value = 'Save';
-            clearInterval(saver);
-        }, 1234);
-    }
+    } 
+        
+    var saver = setTimeout(function(){
+        $('save-setting').value = 'Save';
+        clearInterval(saver);
+    }, 1234);
+    
 })
 
 var tabAnchors = document.getElementsByClassName('tab-anchor');

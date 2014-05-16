@@ -1,8 +1,9 @@
+var LastIcon = 'default', notifer;
 
 function swapIcon() {
-    var schedule = JSON.parse(localStorage.getItem('loshinCache') || '[0]')[0], newDate = new Date(),
+    var schedule = JSON.parse(localStorage.loshinCache || '[0]')[0], newDate = new Date(),
         today = 'sunday monday tuesday wednesday thursday friday saturday'.split(' ')[newDate.getDay()],
-        alertThreshold = localStorage.getItem('loshinAlertBefore') * 1 || 15, 
+        alertThreshold = localStorage.loshinAlertBefore * 1 || 15, 
         icon = 'default',  minutes = [], blackOut, within = '',
         minute = newDate.getHours() * 60 + newDate.getMinutes() 
     ;
@@ -13,7 +14,7 @@ function swapIcon() {
         return;
     }
 
-    blackOut = schedule[localStorage.getItem('loshinMyGroup') || 'group_1'][today];
+    blackOut = schedule[localStorage.loshinMyGroup || 'group_1'][today];
     ['morning', 'evening'].forEach(function(shift){
         blackOut[shift].split('-').forEach(function(tym){
             var tyms = tym.split(':');
@@ -41,7 +42,32 @@ function swapIcon() {
     else if (icon == 'coming') within = ' within ' + diff2 + ' minutes';
 
     chrome.browserAction.setIcon({ path: 'icons/' + icon + '.png' });
-    chrome.browserAction.setTitle({ title:'loshin: Light is ' + icon + within })
+    chrome.browserAction.setTitle({ title:'loshin: Light is ' + icon + within });
+
+    if (icon !== LastIcon) {
+        notify(icon);
+    }
+
+    function notify(icon) {
+        LastIcon = icon;
+        var notification = webkitNotifications.createNotification(
+                'icons/' + icon + '.png',  
+                new Date().toLocaleTimeString(), 
+                'loshin: Light is ' + icon + within
+            )
+        ;
+        notification.show();
+    }
+
+    if (! notifer) {
+        var inter = localStorage.loshinNoticeInterval;
+        notifer = setInterval(
+            function() {
+                notify(icon);
+            }, 
+            (inter || 30) * 60000
+        );
+    }
 }
 
 function ping() {   
