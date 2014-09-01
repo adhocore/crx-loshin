@@ -1,12 +1,14 @@
 // globals for easy access by interval'ed callback
 var LastIcon = 'default', notifer, 
-    icon = 'default', within = '';
+    icon = 'default', within = '',
+    group = 'group_1';
 
 function swapIcon() {
     var schedule = JSON.parse(localStorage.loshinCache || '[0]')[0], newDate = new Date(),
         today = 'sunday monday tuesday wednesday thursday friday saturday'.split(' ')[newDate.getDay()],
         alertThreshold = localStorage.loshinAlertBefore * 1 || 15, 
-        minutes = [], blackOut, minute = newDate.getHours() * 60 + newDate.getMinutes() 
+        minutes = [], blackOut, minute = newDate.getHours() * 60 + newDate.getMinutes(),
+        group = localStorage.loshinMyGroup || 'group_1'
     ;
 
     if (! schedule) {
@@ -15,7 +17,7 @@ function swapIcon() {
         return;
     }
 
-    blackOut = schedule[localStorage.loshinMyGroup || 'group_1'][today];
+    blackOut = schedule[group][today];
     ['morning', 'evening'].forEach(function(shift){
         blackOut[shift].split('-').forEach(function(tym){
             var tyms = tym.split(':');
@@ -54,13 +56,15 @@ function swapIcon() {
 
     function notify() {
         LastIcon = icon;
-        var notification = webkitNotifications.createNotification(
-                'icons/' + icon + '.png',  
-                new Date().toLocaleTimeString().replace(/:\d+ /, ' '), 
-                'loshin: Light is ' + icon + within
+        // revoke as per https://developer.mozilla.org/en/docs/Web/API/notification
+        var notif = new Notification(
+                new Date().toLocaleTimeString().replace(/:\d+ /, ' '),
+                {
+                    icon: 'icons/' + icon + '.png',
+                    body: 'loshin: Light is ' + icon + within
+                }
             )
         ;
-        notification.show();
     }
 
     if (! notifer) {
