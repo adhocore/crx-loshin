@@ -36,14 +36,14 @@ $ git clone https://github.com/adhocore/crx-loshin.git
 6. If you see a bulb button at the top-right of the chrome browser beside the address bar, you are done !
 
 
-# Special Thanks
+### Special Thanks
 
 - [Battigayo API](http://api.battigayo.com/) 
 - [CSS3 Tabs](http://css-tricks.com/css3-tabs/) 
 - [Icon Finder](https://www.iconfinder.com/search/?q=bulb) 
 
 
-# HOW TO CONTRIBUTE
+### HOW TO CONTRIBUTE
 
 - found bugs? then create an issue or create fork, fix issue and then send a pull request. 
 - have updates/patches/fixes? then send pull request 
