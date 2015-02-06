@@ -15,9 +15,11 @@ Settings
 ### Using Git clone
 
 1. Clone the [repo]
+
 ```bash
 $ git clone https://github.com/adhocore/crx-loshin.git
 ```
+
 2. Open Google Chrome and visit [Chrome Extensions Page]
 3. Click on Developer Mode
 4. Load the unpacked extensions and browse file system and the select `crx-loshin` folder recently.
