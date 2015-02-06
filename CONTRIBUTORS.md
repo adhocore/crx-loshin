@@ -1,8 +1,8 @@
-# Creator
+## Creator
 Jitendra Adhikari <adhocore@gmail.com>
 
-# Maintainer
+## Maintainer
 Jitendra Adhikari <adhocore@gmail.com>
 
-# Contributors
+## Contributors
 Samundra Shrestha <samundra.shr@gmail.com>
